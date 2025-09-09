@@ -5,11 +5,11 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://uniliga-rostock.netlify.app/seite1</loc>
+    <loc>https://uniliga-rostock.netlify.app/finale</loc>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://uniliga-rostock.netlify.app/seite2</loc>
+    <loc>https://uniliga-rostock.netlify.app/tabelle</loc>
     <priority>0.8</priority>
   </url>
 </urlset>
