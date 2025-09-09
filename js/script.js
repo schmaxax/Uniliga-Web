@@ -14,6 +14,7 @@ function parseCSV(csvText) {
   });
 }
 
+
 function groupGamesByGroup(games) {
   const groups = {};
   games.forEach(g => {

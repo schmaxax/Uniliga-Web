@@ -351,3 +351,74 @@ li a:hover {
     .hidden {
       display: none;
     }
+
+    @media (max-width: 768px) {
+  .container {
+    padding: 0 10px;
+  }
+
+  header h1 {
+    font-size: 2.5rem; /* kleiner auf Tablets/Handys */
+  }
+
+  main {
+    margin: 1rem auto;
+    padding: 0.5rem;
+  }
+}
+@media (max-width: 480px) {
+  nav ul {
+    display: flex;
+    flex-direction: column; /* vertikal statt horizontal */
+  }
+
+  li {
+    float: none;
+    width: 100%;
+  }
+
+  li a {
+    padding: 12px 0;
+  }
+}
+@media (max-width: 768px) {
+  .bracket {
+    gap: 20px;
+    font-size: 0.9rem;
+  }
+
+  .round {
+    min-width: auto; /* passt sich an */
+  }
+
+  .team-grid #grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.5rem;
+  }
+}
+@media (max-width: 480px) {
+  table, .gruppe {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
+@media (max-width: 768px) {
+  #footer-widgets {
+    flex-direction: column;
+    padding: 1rem;
+  }
+}
+@media (max-width: 480px) {
+  header h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+  }
+
+  p {
+    font-size: 0.9rem;
+  }
+}
