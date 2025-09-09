@@ -1,0 +1,13 @@
+Gruppe,Datum,TeamA,TeamB,saetzeA,saetzeB,Feld, Wertung
+A,2025-10-02,Mollige Möwen, Angaben ohne Gewähr,3,2,Feld 3, Normal
+A,2025-09-01,TeamA,TeamB,3,1,Feld 1, Normal
+A,2025-09-01,TeamC,TeamD,2,3,Feld 2, Normal
+B,2025-09-02,TeamE,TeamF,0,3,Feld 1, Normal
+B,2025-09-02,TeamG,TeamH,3,2,Feld 2, Normal
+B,2025-09-03,TeamI,TeamA,0,3,Feld 3, Normal
+B,2025-09-04,TeamA,TeamB,3,1,Feld 1, Normal
+B,2025-09-04,TeamC,TeamD,2,3,Feld 2, Normal
+A,2025-09-22,TeamA,TeamC,,,"Feld 1", Finale
+A,2025-09-25,TeamB,TeamD,,,"Feld 2", Finale
+B,2025-09-23,TeamE,TeamG,,,"Feld 1", Finale
+B,2025-09-26,TeamF,TeamH,,,"Feld 2", Finale
