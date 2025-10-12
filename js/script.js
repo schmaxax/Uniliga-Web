@@ -1,8 +1,17 @@
 async function loadCSV() {
-  const response = await fetch("data/spiele.csv");
+  const response = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRpdSbswGH_FBb2j8vwLVQMS2hHlfLwA1SPA89_aByWOUmMpLF65ojqxOHlV7W7PiO8PoxXGMvo9-Lj/pub?gid=0&single=true&output=csv");
   const text = await response.text();
-  return parseCSV(text);
+  const allGames = parseCSV(text);
+    // 👇 Filter: nur Spiele mit mindestens einem Satzwert > 0
+  const validGames = allGames.filter(g => {
+    const saetzeA = parseInt(g.saetzeA) || 0;
+    const saetzeB = parseInt(g.saetzeB) || 0;
+    return saetzeA > 0 || saetzeB > 0;
+  });
+
+  return validGames;
 }
+
 function parseCSV(csvText) {
   const rows = csvText.trim().split("\n");
   const headers = rows.shift().split(",").map(h => h.trim());
@@ -30,10 +39,10 @@ function initTeams(games) {
   let teams = {};
   games.forEach(g => {
     if (!teams[g.TeamA]) {
-      teams[g.TeamA] = { name: g.TeamA, spiele: 0, siege: 0, niederlagen: 0, punkte: 0, gSatz: 0, vSatz: 0 };
+      teams[g.TeamA] = { name: g.TeamA, spiele: 0, siege: 0, niederlagen: 0, punkte: 0, gSatz: 0, vSatz: 0,wonPointsTotal:0, lostPointsTotal:0 };
     }
     if (!teams[g.TeamB]) {
-      teams[g.TeamB] = { name: g.TeamB, spiele: 0, siege: 0, niederlagen: 0, punkte: 0, gSatz: 0, vSatz: 0 };
+      teams[g.TeamB] = { name: g.TeamB, spiele: 0, siege: 0, niederlagen: 0, punkte: 0, gSatz: 0, vSatz: 0, wonPointsTotal:0, lostPointsTotal:0  };
     }
   });
   return teams;
@@ -44,6 +53,8 @@ function updateStats(game, teams) {
   const saetzeB = parseInt(game.saetzeB) || 0;
   const teamA = teams[game.TeamA];
   const teamB = teams[game.TeamB];
+  const pointsA = parseInt(game.PunkteTotalA) || 0;
+  const pointsB = parseInt(game.PunkteTotalB) || 0;
 
   teamA.spiele++;
   teamB.spiele++;
@@ -53,6 +64,12 @@ function updateStats(game, teams) {
   teamA.vSatz += saetzeB;
   teamB.vSatz += saetzeA;
 
+  teamA.wonPointsTotal += pointsA;
+  teamA.lostPointsTotal += pointsB;
+  teamB.wonPointsTotal += pointsB;
+  teamB.lostPointsTotal += pointsA;
+  
+  
   if (saetzeA > saetzeB) {
     teamA.siege++;
     teamB.niederlagen++;
@@ -88,15 +105,20 @@ if (saetzeA === 3 && saetzeB < 3) {
 
 function sortTable(teams) {
   return Object.values(teams).sort((a, b) => {
-    if (b.punkte !== a.punkte) return b.punkte - a.punkte; //mehr Punkte zuerst
-    if(b.siege !== a.siege) return b.siege - a.siege; // mehr Siege zuerst  
-    const diffA = a.gSatz - a.vSatz;
-    const diffB = b.gSatz - b.vSatz;
-    if(diffB !== diffA)return diffB - diffA; //größere Differenz zuerst
-    if (b.gSatz !== a.gSatz) return b.gSatz - a.gSatz; // mehr gewonnene Sätze zuerst
-    return a.name.localeCompare(b.name); 
+    const satzDiffA = a.gSatz - a.vSatz;
+    const satzDiffB = b.gSatz - b.vSatz;
+    const punktDiffA = a.wonPointsTotal - a.lostPointsTotal;
+    const punktDiffB = b.wonPointsTotal - b.lostPointsTotal;
+
+    if (b.punkte !== a.punkte) return b.punkte - a.punkte;              // 1. Satzpunkte
+    if (b.siege !== a.siege) return b.siege - a.siege;                  // 2. Siege
+    if (satzDiffB !== satzDiffA) return satzDiffB - satzDiffA;          // 3. Satzdifferenz
+    if (b.gSatz !== a.gSatz) return b.gSatz - a.gSatz;                  // 4. Mehr gewonnene Sätze
+    if (punktDiffB !== punktDiffA) return punktDiffB - punktDiffA;      // 5. Punktdifferenz
+    return b.wonPointsTotal - a.wonPointsTotal;                         // 6. Mehr gewonnene Punkte
   });
 }
+
 function renderTable(sortedTeams, groupName) {
   const container = document.querySelector("#tabellen");
   const table = document.createElement("table");
@@ -106,8 +128,8 @@ function renderTable(sortedTeams, groupName) {
     <caption>Gruppe ${groupName}</caption>
     <thead>
       <tr>
-        <th>Platz</th><th>Team</th><th>Spiele</th><th>Wins - Loses</th>
-        <th>Punkte</th><th>Sätze</th>
+        <th>Platz</th><th>Team</th><th>Spiele</th><th>MP</th><th>W - L</th>
+        <th>Sätze</th><th>Punkte</th>
       </tr>
     </thead>
     <tbody>
@@ -116,9 +138,10 @@ function renderTable(sortedTeams, groupName) {
           <td>${index + 1}</td>
           <td>${team.name}</td>
           <td>${team.spiele}</td>
-          <td>${team.siege} - ${team.niederlagen}</td>
           <td>${team.punkte}</td>
+          <td>${team.siege} - ${team.niederlagen}</td>
           <td>${team.gSatz} : ${team.vSatz}</td>
+          <td>${team.wonPointsTotal} : ${team.lostPointsTotal}</td>
         </tr>`).join("")}
     </tbody>
   `;

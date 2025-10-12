@@ -1,5 +1,5 @@
 async function loadCSV() {
-  const response = await fetch("data/spiele.csv");
+  const response = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRpdSbswGH_FBb2j8vwLVQMS2hHlfLwA1SPA89_aByWOUmMpLF65ojqxOHlV7W7PiO8PoxXGMvo9-Lj/pub?gid=0&single=true&output=csv");
   const text = await response.text();
   return parseCSV(text);
 }
@@ -73,7 +73,7 @@ function renderSpiele(futureDates, pastDates) {
     .map(([datum, spiele]) => `
       <div class="day-group">
         <h3>${formatDateDELong(datum)}</h3>
-        ${spiele.map(g => `<div class="game">${g.TeamA} vs ${g.TeamB} (${g.Feld})</div>`).join("")}
+        ${spiele.map(g => `<div class="game"><span style="font-weight:bold; font-size:1em;">${g.TeamA} vs ${g.TeamB} </span> <span style="display:inline-block; width:100%; text-align:left;"> Schiedsrichter: ${g.Schiedsrichter} (Spiel ${g.Spiel} Feld ${g.Feld}) </span></div>`).join("")}
       </div>
     `).join("");
 
@@ -87,7 +87,7 @@ function renderSpiele(futureDates, pastDates) {
       <div class="day-group">
       
         <h3>${formatDateDELong(datum)}</h3>
-        ${spiele.map(g => `<div class="game">${g.TeamA} vs ${g.TeamB} (${g.Feld})</div>`).join("")}
+        ${spiele.map(g => `<div class="game">${g.TeamA}  <span style="font-weight:bold; font-size:1.2em;">${g.saetzeA}  vs ${g.saetzeB}</span> ${g.TeamB} (Spiel ${g.Spiel} Feld ${g.Feld})</div>`).join("")}
       </div>
     `).join("")}
 `;

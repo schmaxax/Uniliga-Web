@@ -1,5 +1,5 @@
 async function loadCSV() {
-  const response = await fetch("data/spiele.csv");
+  const response = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRpdSbswGH_FBb2j8vwLVQMS2hHlfLwA1SPA89_aByWOUmMpLF65ojqxOHlV7W7PiO8PoxXGMvo9-Lj/pub?gid=0&single=true&output=csv");
   const text = await response.text();
   return text;
 }
