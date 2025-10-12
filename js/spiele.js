@@ -68,14 +68,38 @@ function renderSpiele(futureDates, pastDates) {
   const container2 = document.querySelector("#past-games");
 
   // kommende Spiele
-  const futureGroups = groupByDate(futureDates);
-  container.innerHTML = Object.entries(futureGroups)
-    .map(([datum, spiele]) => `
+const futureGroups = groupByDate(futureDates);
+container.innerHTML = Object.entries(futureGroups)
+  .map(([datum, spiele]) => {
+    // Spiele nach Feld gruppieren
+    const spieleByFeld = {};
+    spiele.forEach(g => {
+      if (!spieleByFeld[g.Feld]) spieleByFeld[g.Feld] = [];
+      spieleByFeld[g.Feld].push(g);
+    });
+
+    // HTML für jeden Tag erzeugen
+    return `
       <div class="day-group">
-        <h3>${formatDateDELong(datum)}</h3>
-        ${spiele.map(g => `<div class="game"><span style="font-weight:bold; font-size:1em;">${g.TeamA} vs ${g.TeamB} </span> <span style="display:inline-block; width:100%; text-align:left;"> Schiedsrichter: ${g.Schiedsrichter} (Spiel ${g.Spiel} Feld ${g.Feld}) </span></div>`).join("")}
+        <h3 style="text-decoration: underline;">${formatDateDELong(datum)}</h3>
+        ${Object.entries(spieleByFeld).map(([feld, feldSpiele]) => `
+          <div class="field-group">
+            <h4>Feld ${feld}</h4>
+            ${feldSpiele.map(g => `
+              <div class="game">
+                <span style="font-weight:bold; font-size:1em;">
+                  ${g.TeamA} vs ${g.TeamB}
+                </span>
+                <span style="display:inline-block; width:100%; text-align:left;">
+                  Schiedsrichter: ${g.Schiedsrichter} (Spiel ${g.Spiel})
+                </span>
+              </div>
+            `).join("")}
+          </div>
+        `).join("")}
       </div>
-    `).join("");
+    `;
+  }).join("");
 
   // vergangene Spiele
   const pastGroups = groupByDate(pastDates);
