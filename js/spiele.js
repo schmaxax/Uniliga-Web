@@ -10,36 +10,37 @@ function parseCSV(csvText) {
   return rows.map(row => {
     const values = row.split(",").map(v => v.trim());
     let obj = {};
-    headers.forEach((h, i) => obj[h] = values[i]);
+    headers.forEach((h, i) => (obj[h] = values[i]));
     return obj;
   });
 }
 
 function dateToday() {
   const heute = new Date();
-  return heute.toISOString().split("T")[0]; // "YYYY-MM-DD"
+  return heute.toISOString().split("T")[0];
 }
 
 function dateInTwoWeeks() {
   const heute = new Date();
   const zweiWochen = new Date(heute);
-  zweiWochen.setDate(heute.getDate() + 14);
-  return zweiWochen.toISOString().split("T")[0]; // "YYYY-MM-DD"
+  zweiWochen.setDate(heute.getDate() + 13);
+  return zweiWochen.toISOString().split("T")[0];
 }
 
 function formatDateDELong(dateStr) {
   const date = new Date(dateStr);
-  return date.toLocaleDateString("de-DE", { 
-    weekday: "long", 
-    year: "numeric", 
-    month: "long", 
-    day: "2-digit" 
+  return date.toLocaleDateString("de-DE", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "2-digit"
   });
 }
 
 function sortDates(games) {
   const futureDates = [];
   const pastDates = [];
+  const moreFutureGames = []; // ✅ fehlte vorher!
   const today = dateToday();
   const twoWeeksLater = dateInTwoWeeks();
 
@@ -48,12 +49,14 @@ function sortDates(games) {
       pastDates.push(game);
     } else if (game.Datum <= twoWeeksLater) {
       futureDates.push(game);
+    } else {
+      moreFutureGames.push(game);
     }
   }
-  return { futureDates, pastDates };
+
+  return { futureDates, pastDates, moreFutureGames }; // ✅ korrekt geschlossen
 }
 
-// Hilfsfunktion: Gruppieren nach Datum
 function groupByDate(games) {
   const groups = {};
   games.forEach(g => {
@@ -63,64 +66,113 @@ function groupByDate(games) {
   return groups;
 }
 
-function renderSpiele(futureDates, pastDates) {
+function renderSpiele(futureDates, pastDates, moreFutureGames) {
   const container = document.querySelector("#future-games");
   const container2 = document.querySelector("#past-games");
+  const container3 = document.querySelector("#more-future-games");
 
-  // kommende Spiele
-const futureGroups = groupByDate(futureDates);
-container.innerHTML = Object.entries(futureGroups)
-  .map(([datum, spiele]) => {
-    // Spiele nach Feld gruppieren
-    const spieleByFeld = {};
-    spiele.forEach(g => {
-      if (!spieleByFeld[g.Feld]) spieleByFeld[g.Feld] = [];
-      spieleByFeld[g.Feld].push(g);
-    });
+  // Kommende Spiele
+  const futureGroups = groupByDate(futureDates);
+  container.innerHTML = Object.entries(futureGroups)
+    .map(([datum, spiele]) => {
+      const spieleByFeld = {};
+      spiele.forEach(g => {
+        if (!spieleByFeld[g.Feld]) spieleByFeld[g.Feld] = [];
+        spieleByFeld[g.Feld].push(g);
+      });
 
-    // HTML für jeden Tag erzeugen
-    return `
-      <div class="day-group">
-        <h3 style="text-decoration: underline;">${formatDateDELong(datum)}</h3>
-        ${Object.entries(spieleByFeld).map(([feld, feldSpiele]) => `
-          <div class="field-group">
-            <h4>Feld ${feld}</h4>
-            ${feldSpiele.map(g => `
-              <div class="game">
-                <span style="font-weight:bold; font-size:1em;">
-                  ${g.TeamA} vs ${g.TeamB}
-                </span>
-                <span style="display:inline-block; width:100%; text-align:left;">
-                  Schiedsrichter: ${g.Schiedsrichter} (Spiel ${g.Spiel})
-                </span>
-              </div>
-            `).join("")}
-          </div>
-        `).join("")}
-      </div>
-    `;
-  }).join("");
+      return `
+        <details open>
+          <summary><h3>${formatDateDELong(datum)}</h3></summary>
+          ${Object.entries(spieleByFeld)
+            .map(
+              ([feld, feldSpiele]) => `
+              <div class="field-group">
+                <h4>Feld ${feld}</h4>
+                ${feldSpiele
+                  .map(
+                    g => `
+                  <div class="game">
+                    <span style="font-weight:bold;">${g.TeamA} vs ${g.TeamB}</span><br>
+                    <span>Schiedsrichter: ${g.Schiedsrichter} (Spiel ${g.Spiel})</span>
+                  </div>`
+                  )
+                  .join("")}
+              </div>`
+            )
+            .join("")}
+        </details>
+      `;
+    })
+    .join("");
 
-  // vergangene Spiele
+  // Weitere Spiele
+  const moreFutureGroups = groupByDate(moreFutureGames);
+  container3.innerHTML = `
+    <h2>Weitere Spiele</h2>
+    ${Object.entries(moreFutureGroups)
+      .map(([datum, spiele]) => {
+        const spieleByFeld = {};
+        spiele.forEach(g => {
+          if (!spieleByFeld[g.Feld]) spieleByFeld[g.Feld] = [];
+          spieleByFeld[g.Feld].push(g);
+        });
+
+        return `
+          <details open>
+            <summary><h3>${formatDateDELong(datum)}</h3></summary>
+            ${Object.entries(spieleByFeld)
+              .map(
+                ([feld, feldSpiele]) => `
+                <div class="field-group">
+                  <h4>Feld ${feld}</h4>
+                  ${feldSpiele
+                    .map(
+                      g => `
+                    <div class="game">
+                      <span style="font-weight:bold;">${g.TeamA} vs ${g.TeamB}</span><br>
+                      <span>Schiedsrichter: ${g.Schiedsrichter} (Spiel ${g.Spiel})</span>
+                    </div>`
+                    )
+                    .join("")}
+                </div>`
+              )
+              .join("")}
+          </details>
+        `;
+      })
+      .join("")}
+  `;
+
+  // Vergangene Spiele
   const pastGroups = groupByDate(pastDates);
   container2.innerHTML = `
-  <h2>Spielhistorie</h2>
-  ${Object.entries(pastGroups)
-    .map(([datum, spiele]) => `
-    
-      <div class="day-group">
-      
-        <h3>${formatDateDELong(datum)}</h3>
-        ${spiele.map(g => `<div class="game">${g.TeamA}  <span style="font-weight:bold; font-size:1.2em;">${g.saetzeA}  vs ${g.saetzeB}</span> ${g.TeamB} (Spiel ${g.Spiel} Feld ${g.Feld})</div>`).join("")}
-      </div>
-    `).join("")}
-`;
+    <h2>Spielhistorie</h2>
+    ${Object.entries(pastGroups)
+      .map(
+        ([datum, spiele]) => `
+        <details open>
+          <summary><h3>${formatDateDELong(datum)}</h3></summary>
+          ${spiele
+            .map(
+              g => `
+              <div class="game">
+                ${g.TeamA}
+                <span style="font-weight:bold;">${g.saetzeA} : ${g.saetzeB}</span>
+                ${g.TeamB} (Spiel ${g.Spiel}, Feld ${g.Feld})
+              </div>`
+            )
+            .join("")}
+        </details>`
+      )
+      .join("")}
+  `;
 }
 
 async function main() {
   const games = await loadCSV();
-  const { futureDates, pastDates } = sortDates(games);
-  renderSpiele(futureDates, pastDates);
+  const { futureDates, pastDates, moreFutureGames } = sortDates(games);
+  renderSpiele(futureDates, pastDates, moreFutureGames);
 }
 
 main();

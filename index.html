@@ -34,14 +34,18 @@
   <h2>Kommende Spiele</h2>
   <div id="future-games">
   </div>
-  <!-- Vergangene Spiele -->
-  <div id="past-games" class="hidden">
+  <div id="more-future-games" class="hidden"></div>  
+  <div id="past-games" class="hidden"></div>
+<button class="toggle-button" data-target="#more-future-games" aria-expanded="true">
+Alle Spiele anzeigen
+  <span class="arrow">▼</span>
+</button>
 
-  </div>
-  <button class="toggle-button" onclick="togglePastGames()">
-    Vergangene Spiele anzeigen
-    <span id="arrow" class="arrow">▼</span>
-  </button>
+<button class="toggle-button" data-target="#past-games" aria-expanded="false">
+Spielhistorie anzeigen
+  <span class="arrow">▼</span>
+</button>
+
 
 
     </div>

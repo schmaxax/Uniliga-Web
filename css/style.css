@@ -343,8 +343,22 @@ li a:hover {
     .toggle-button:hover {
       text-decoration: underline;
     }
+    
+    .toggle-button {
+      cursor: pointer;
+      background: none;
+      border: 1px solid #ccc;
+      padding: 8px 12px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-    .arrow {
+    .toggle-button .arrow {
+      display: inline-block;
+      transition: transform 200ms ease;
+      transform-origin: center;
       transition: transform 0.3s ease;
     }
 

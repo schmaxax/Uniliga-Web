@@ -2,7 +2,7 @@ async function loadCSV() {
   const response = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRpdSbswGH_FBb2j8vwLVQMS2hHlfLwA1SPA89_aByWOUmMpLF65ojqxOHlV7W7PiO8PoxXGMvo9-Lj/pub?gid=0&single=true&output=csv");
   const text = await response.text();
   const allGames = parseCSV(text);
-    // 👇 Filter: nur Spiele mit mindestens einem Satzwert > 0
+    // 👇 Filter: nur Spiele mit mindestens einem Satzwert > 0; ist gerade unnötig durch verbesserte sortierung.
   const validGames = allGames.filter(g => {
     const saetzeA = parseInt(g.saetzeA) || 0;
     const saetzeB = parseInt(g.saetzeB) || 0;
