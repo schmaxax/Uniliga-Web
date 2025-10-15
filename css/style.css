@@ -259,7 +259,7 @@ li a:hover {
 
 .team-card:hover {
   transform: scale(1.05);
-  background: rgb(32,132,255);
+  background: var(--background,#2084ff);
   color: white;
 }
 

@@ -21,6 +21,13 @@ function readCsvColumn(file, columnName1, columnName2, callback) {
 
 function renderGrid(uniqueTeams) {
   const container = document.querySelector("#grid");
+  const teamCards = document.querySelectorAll('.team-card');
+teamCards.forEach(card => {
+  const randomColor = "#" + ((1 << 24) * Math.random() | 0).toString(16);
+  card.style.setProperty('--background', randomColor);
+});
+
+
 
   container.innerHTML = uniqueTeams
     .map(team => `<div class="team-card">${team}</div>`)
