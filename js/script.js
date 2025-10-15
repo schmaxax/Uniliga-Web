@@ -8,8 +8,8 @@ async function loadCSV() {
     const saetzeB = parseInt(g.saetzeB) || 0;
     return saetzeA > 0 || saetzeB > 0;
   });
-
-  return validGames;
+  return allGames;
+  //return validGames;
 }
 
 function parseCSV(csvText) {
@@ -73,9 +73,12 @@ function updateStats(game, teams) {
   if (saetzeA > saetzeB) {
     teamA.siege++;
     teamB.niederlagen++;
-  } else {
+  } else if (saetzeB > saetzeA) {
     teamB.siege++;
     teamA.niederlagen++;
+  } else if (saetzeA === 0 && saetzeB === 0) {
+    teamA.spiele -= 1;
+    teamB.spiele -= 1; // Beide Teams haben keine Spiele
   }
 
 if (saetzeA ==2 && saetzeB <=1){
@@ -109,7 +112,6 @@ function sortTable(teams) {
     const satzDiffB = b.gSatz - b.vSatz;
     const punktDiffA = a.wonPointsTotal - a.lostPointsTotal;
     const punktDiffB = b.wonPointsTotal - b.lostPointsTotal;
-
     if (b.punkte !== a.punkte) return b.punkte - a.punkte;              // 1. Satzpunkte
     if (b.siege !== a.siege) return b.siege - a.siege;                  // 2. Siege
     if (satzDiffB !== satzDiffA) return satzDiffB - satzDiffA;          // 3. Satzdifferenz
@@ -125,7 +127,7 @@ function renderTable(sortedTeams, groupName) {
   table.classList.add("gruppe");
 
   table.innerHTML = `
-    <caption>Gruppe ${groupName}</caption>
+    <caption> ${groupName}</caption>
     <thead>
       <tr>
         <th>Platz</th><th>Team</th><th>Spiele</th><th>MP</th><th>W - L</th>
