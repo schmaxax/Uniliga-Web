@@ -55,8 +55,7 @@ function updateStats(game, teams) {
   const teamB = teams[game.TeamB];
   const pointsA = parseInt(game.PunkteTotalA) || 0;
   const pointsB = parseInt(game.PunkteTotalB) || 0;
-  const punktDiffA = a.wonPointsTotal - a.lostPointsTotal;
-  const punktDiffB = b.wonPointsTotal - b.lostPointsTotal;
+
   teamA.spiele++;
   teamB.spiele++;
 
@@ -70,7 +69,10 @@ function updateStats(game, teams) {
   teamB.wonPointsTotal += pointsB;
   teamB.lostPointsTotal += pointsA;
   
-  
+    
+  const punktDiffA = teamA.wonPointsTotal - teamA.lostPointsTotal;
+  const punktDiffB = teamB.wonPointsTotal - teamB.lostPointsTotal;
+
   if (saetzeA > saetzeB) {
     teamA.siege++;
     teamB.niederlagen++;
@@ -92,13 +94,13 @@ function updateStats(game, teams) {
     }
   }
 
-if (saetzeA ==2 && saetzeB <=1){
+if (saetzeA === 2 && saetzeB <=1){
   teamA.punkte += 1;
 }  else if(saetzeB === 2 && saetzeA <= 1){
   teamB.punkte += 1;
 } 
 
-/*
+
 if (saetzeA === 3 && saetzeB < 3) {
   // A gewinnt
   if (saetzeB <= 1) {
@@ -116,7 +118,7 @@ if (saetzeA === 3 && saetzeB < 3) {
     teamA.punkte += 1;
   }
 }
-*/
+
 }
 
 function sortTable(teams) {
