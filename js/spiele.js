@@ -149,22 +149,35 @@ function renderSpiele(futureDates, pastDates, moreFutureGames) {
   container2.innerHTML = `
     <h2>Spielhistorie</h2>
     ${Object.entries(pastGroups)
-      .map(
-        ([datum, spiele]) => `
-        <details open>
-          <summary><h3>${formatDateDELong(datum)}</h3></summary>
-          ${spiele
-            .map(
-              g => `
-              <div class="game">
-                ${g.TeamA}
-                <span style="font-weight:bold;">${g.saetzeA} : ${g.saetzeB}</span>
-                ${g.TeamB} (Spiel ${g.Spiel}, Feld ${g.Feld})
-              </div>`
-            )
-            .join("")}
-        </details>`
-      )
+      .map(([datum, spiele]) => {
+        const spieleByFeld = {};
+        spiele.forEach(g => {
+          if (!spieleByFeld[g.Feld]) spieleByFeld[g.Feld] = [];
+          spieleByFeld[g.Feld].push(g);
+        });
+
+        return `
+          <details open>
+            <summary><h3>${formatDateDELong(datum)}</h3></summary>
+            ${Object.entries(spieleByFeld)
+              .map(
+                ([feld, feldSpiele]) => `
+                <div class="field-group">
+                  <h4>Feld ${feld}</h4>
+                  ${feldSpiele
+                    .map(
+                      g => `
+                    <div class="game">
+                      ${g.TeamA} <span style="font-weight:bold;">${g.saetzeA} : ${g.saetzeB}</span> ${g.TeamB}<br>
+                    </div>`
+                    )
+                    .join("")}
+                </div>`
+              )
+              .join("")}
+          </details>
+        `;
+      })
       .join("")}
   `;
 }
