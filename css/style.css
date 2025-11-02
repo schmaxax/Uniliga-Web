@@ -440,3 +440,30 @@ li a:hover {
     font-size: 0.9rem;
   }
 }
+/* Tooltip Styles für Tabellenüberschriften */
+th {
+  position: relative;
+  cursor: help;
+}
+
+th .tooltip-text {
+  visibility: hidden;
+  opacity: 0;
+  width: 180px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 6px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: opacity 0.3s;
+}
+
+th:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}

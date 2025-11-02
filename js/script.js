@@ -93,7 +93,7 @@ function updateStats(game, teams) {
       teamA.niederlagen++;
     }
   }
-
+/* // Matchpunkte vergeben
 if (saetzeA === 2 && saetzeB <=1){
   teamA.punkte += 1;
 }  else if(saetzeB === 2 && saetzeA <= 1){
@@ -118,8 +118,9 @@ if (saetzeA === 3 && saetzeB < 3) {
     teamA.punkte += 1;
   }
 }
-
+*/
 }
+
 
 function sortTable(teams) {
   return Object.values(teams).sort((a, b) => {
@@ -127,10 +128,10 @@ function sortTable(teams) {
     const satzDiffB = b.gSatz - b.vSatz;
     const punktDiffA = a.wonPointsTotal - a.lostPointsTotal;
     const punktDiffB = b.wonPointsTotal - b.lostPointsTotal;
-    if (b.punkte !== a.punkte) return b.punkte - a.punkte;              // 1. Satzpunkte
-    if (b.siege !== a.siege) return b.siege - a.siege;                  // 2. Siege
-    if (satzDiffB !== satzDiffA) return satzDiffB - satzDiffA;          // 3. Satzdifferenz
+    //if (b.punkte !== a.punkte) return b.punkte - a.punkte;              // 1. Satzpunkte
+    //if (b.siege !== a.siege) return b.siege - a.siege;                  // 2. Siege
     if (b.gSatz !== a.gSatz) return b.gSatz - a.gSatz;                  // 4. Mehr gewonnene Sätze
+    //if (satzDiffB !== satzDiffA) return satzDiffB - satzDiffA;          // 3. Satzdifferenz
     if (punktDiffB !== punktDiffA) return punktDiffB - punktDiffA;      // 5. Punktdifferenz
     return b.wonPointsTotal - a.wonPointsTotal;                         // 6. Mehr gewonnene Punkte
   });
@@ -145,8 +146,8 @@ function renderTable(sortedTeams, groupName) {
     <caption> ${groupName}</caption>
     <thead>
       <tr>
-        <th>Platz</th><th>Team</th><th>Spiele</th><th>MP</th><th>W - L</th>
-        <th>Sätze</th><th>Punkte</th>
+        <th>Platz <span class="tooltip-text">Platzierung der Teams | gewertet nach Sätzen und Punktdifferenz</span></th><th>Team <span class="tooltip-text">Namen der Teams</span></th><th>Spiele<span class="tooltip-text">Anzahl der absolvierten Spiele</span></th><th>W - L<span class="tooltip-text">Gewonnene - Verlorene Spiele | irrelevant für die Platzierung</span></th>
+        <th>Sätze<span class="tooltip-text">Gewonnene - Verlorene Sätze</span></th><th>Punkte<span class="tooltip-text">Gewonnene - Verlorene Punkte</span></th>
       </tr>
     </thead>
     <tbody>
@@ -155,7 +156,6 @@ function renderTable(sortedTeams, groupName) {
           <td>${index + 1}</td>
           <td>${team.name}</td>
           <td>${team.spiele}</td>
-          <td>${team.punkte}</td>
           <td>${team.siege} - ${team.niederlagen}</td>
           <td>${team.gSatz} : ${team.vSatz}</td>
           <td>${team.wonPointsTotal} : ${team.lostPointsTotal}</td>
